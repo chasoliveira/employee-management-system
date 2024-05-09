@@ -1,25 +1,25 @@
-# Emplyment-Management-System
+# Employment-Management-System
 
 Welcome to the Employment Management System. This system is designed to help you manage your employees and their information. You can add, delete, and update employees. You can also view all employees and search for employees by name or job title if you are an admin.
 
 ## Backend
 
-This project was created using .Net Core with C#, and SQL Seerver for the backend. 
-- The minimal API approch was used to create the API. It is a new approach to create APIs in .Net Core, and it is more lightweight than the traditional approach.
-- The repository pattern was used to access the database, and void the direct access to the database context.
-- The services were created to handle the business logic when it is needed like for authentication.
-- The CQRS pattern was used to separate the read and write operations, even though the project is small, and the project has only one database. It allows for better separation of concerns and makes the code easier to maintain.
-- Internal logic for generating the JWT was used for authentication and authorization. Would be better to use an Identity Provider (like the Keycloak) to manage the users and the roles. For now the system has only two roles: `Admin` and `User`.
+This project was created using .Net Core with C#, and SQL Server for the backend. 
+- The minimal API approach was used to create the API. It is a new approach to create APIs in .Net Core, and it is more lightweight than the traditional approach.
+- The repository pattern was used to access the database, and avoid direct access to the database context.
+- Services were created to handle the business logic when needed, like for authentication.
+- The CQRS pattern was used to separate the read and write operations. Even though the project is small and has only one database, it allows for better separation of concerns and makes the code easier to maintain.
+- Internal logic for generating the JWT was used for authentication and authorization. It would be better to use an Identity Provider (like Keycloak) to manage the users and the roles. For now, the system has only two roles: `Admin` and `User`.
 - The database was created using Entity Framework Core, and the migrations were created using the `dotnet ef` CLI.
-- The unit tests were created using `xUnit`, `Moq`, and `FluentAssertions`.
-- The integration tests were created using xUnit and should use the `WebApplicationFactory` class, still being under development.
+- Unit tests were created using `xUnit`, `Moq`, and `FluentAssertions`.
+- Integration tests were created using xUnit and should use the `WebApplicationFactory` class, still under development.
 
-The project structure was created to make it easier to maintain and to add new features. 
-The backend was splited in six projects: `EMS.Api`, `EMS.Application`, `EMS.Domain`, `EMS.Infrastructure`, `EMS.UnitTests`, and `EMS.IntegrationTests`. It is an recommended approach to create a project for each layer of the application, to make it easier to maintain and to add new features, according to the SOLID principles and the Clean Architecture.
+The project structure was created to make it easier to maintain and add new features. 
+The backend was split into six projects: `EMS.Api`, `EMS.Application`, `EMS.Domain`, `EMS.Infrastructure`, `EMS.UnitTests`, and `EMS.IntegrationTests`. It is a recommended approach to create a project for each layer of the application, to make it easier to maintain and add new features, according to the SOLID principles and Clean Architecture.
 
-- The `EMS.Api` project is the main project, where the endpoints and the services are located, and/or initialized. Also this project there is a file `EMS.Api.Http` to run tests locally like usually, you could do using the `Postman` or `Swagger UI`. If you are using Visual Studio, you need to install an extension (`REST Client`) to run the requests.
-- The `EMS.Domain` project contains the domain models and the interfaces, it is important to mention that the domain models are not the same as the database models. 
-- The `EMS.Application` project contains the services and the mappers, and any validation that is needed to be done before calling the repository methods. 
+- The `EMS.Api` project is the main project, where the endpoints and the services are located and/or initialized. Also, in this project, there is a file `EMS.Api.Http` to run tests locally as you usually could do using `Postman` or `Swagger UI`. If you are using Visual Studio, you need to install an extension (`REST Client`) to run the requests.
+- The `EMS.Domain` project contains the domain models and the interfaces. It is important to mention that the domain models are not the same as the database models. 
+- The `EMS.Application` project contains the services and the mappers, and any validation that needs to be done before calling the repository methods. 
 - The `EMS.Infrastructure` project contains the database context and the repository implementations. 
 - The `EMS.UnitTests` project contains the tests for the services.
 - The `EMS.IntegrationTests` project contains the tests for the endpoints, to make sure that the API is working as expected.
@@ -32,16 +32,14 @@ The backend was splited in six projects: `EMS.Api`, `EMS.Application`, `EMS.Doma
 
 ## Frontend
 
-The frontend is a React application that uses TypeScript. To run the frontend, you will need to have Node.js installed on your machine.
+The frontend is a React application that uses TypeScript, through the use of the `vite` to build the project. To run the frontend, you will need to have Node.js installed on your machine.
 
-The frontend was created using React with TypeScript, through the use of the `vite` to build the project.
-- The `axios` was not used, instead a service was create to make the requests to the API.
-- The `react-router-dom` was used to handle the routes.
-- The `react-hook-form` was used to handle the forms.
+- The `axios` was not used, instead a service was create to make the requests to the API. Since the project is small, it is easier to maintain the requests in one place.
+- The `react-router-dom` was used to handle the routes. and the `react-router-guard` was not used to handle the routes protection due to the requirements of the project.
+- The `react-hook-form` was used to handle the forms, along with the `yup` to validate the forms.
 - The `material-ui` was used to style the components.
-- the `yup` was used to validate the forms. 
 
-The folder structure was created thinking about the nature of react, of being a build block system, so the components are organized in folders that denote it nature, like persnalized hooks are inside of the `hooks` fodler, and the pages are organized in the `pages` folder. The `services` folder contains the services that are used to make the requests to the API.
+The folder structure was created thinking about the nature of react of being a build block system, so the components are organized in folders that denote it nature, like app hooks are inside of the `hooks` folder, and the pages are organized in the `pages` folder. The `services` folder contains the services that are used to make the requests to the API.
 
 Also, to run locally make sure to configure the target api in the vite.config.ts file with the url and port correctly.
 
