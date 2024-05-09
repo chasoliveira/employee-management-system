@@ -5,22 +5,34 @@ Welcome to the Employment Management System. This system is designed to help you
 ## Backend
 
 This project was created using .Net Core with C#, and SQL Seerver for the backend. 
-- The minimal API approch was used to create the API. 
+- The minimal API approch was used to create the API. It is a new approach to create APIs in .Net Core, and it is more lightweight than the traditional approach.
 - The repository pattern was used to access the database, and void the direct access to the database context.
-- The services were created to handle the business logic when needed like for authentication.
-- The CQRS pattern was used to separate the read and write operations, even though the project is small, and the project has only one database.
-- The JWT was used for authentication and authorization. Would be better to use an Identity Provider (like the Keycloak) to manage the users and the roles. For now the system has only two roles: `Admin` and `User`.
+- The services were created to handle the business logic when it is needed like for authentication.
+- The CQRS pattern was used to separate the read and write operations, even though the project is small, and the project has only one database. It allows for better separation of concerns and makes the code easier to maintain.
+- Internal logic for generating the JWT was used for authentication and authorization. Would be better to use an Identity Provider (like the Keycloak) to manage the users and the roles. For now the system has only two roles: `Admin` and `User`.
 - The database was created using Entity Framework Core, and the migrations were created using the `dotnet ef` CLI.
-- The unit tests were created using xUnit and Moq.
+- The unit tests were created using `xUnit`, `Moq`, and `FluentAssertions`.
 - The integration tests were created using xUnit and should use the `WebApplicationFactory` class, still being under development.
+
+The project structure was created to make it easier to maintain and to add new features. 
+The backend was splited in six projects: `EMS.Api`, `EMS.Application`, `EMS.Domain`, `EMS.Infrastructure`, `EMS.UnitTests`, and `EMS.IntegrationTests`. It is an recommended approach to create a project for each layer of the application, to make it easier to maintain and to add new features, according to the SOLID principles and the Clean Architecture.
+
+- The `EMS.Api` project is the main project, where the endpoints and the services are located, and/or initialized. Also this project there is a file `EMS.Api.Http` to run tests locally like usually, you could do using the `Postman` or `Swagger UI`. If you are using Visual Studio, you need to install an extension (`REST Client`) to run the requests.
+- The `EMS.Domain` project contains the domain models and the interfaces, it is important to mention that the domain models are not the same as the database models. 
+- The `EMS.Application` project contains the services and the mappers, and any validation that is needed to be done before calling the repository methods. 
+- The `EMS.Infrastructure` project contains the database context and the repository implementations. 
+- The `EMS.UnitTests` project contains the tests for the services.
+- The `EMS.IntegrationTests` project contains the tests for the endpoints, to make sure that the API is working as expected.
 
 ### Known Issues
 
-    - The integration tests not developed yet.
-    - The units tests are not covering all the code.
-    - There are only two roles: `Admin` and `User`.
+  - The integration tests not developed yet.
+  - The units tests are not covering all the code.
+  - There are only two roles: `Admin` and `User`.
 
 ## Frontend
+
+The frontend is a React application that uses TypeScript. To run the frontend, you will need to have Node.js installed on your machine.
 
 The frontend was created using React with TypeScript, through the use of the `vite` to build the project.
 - The `axios` was not used, instead a service was create to make the requests to the API.
@@ -29,14 +41,18 @@ The frontend was created using React with TypeScript, through the use of the `vi
 - The `material-ui` was used to style the components.
 - the `yup` was used to validate the forms. 
 
+The folder structure was created thinking about the nature of react, of being a build block system, so the components are organized in folders that denote it nature, like persnalized hooks are inside of the `hooks` fodler, and the pages are organized in the `pages` folder. The `services` folder contains the services that are used to make the requests to the API.
+
+Also, to run locally make sure to configure the target api in the vite.config.ts file with the url and port correctly.
+
 ### Known Issues
 
-- The tests are not covering all the code.
-- The integration tests not developed yet.
-- If the rules for the roles change, the frontend will need to be updated.
-- The `react-hook-form` was not used in all the forms.
-- The `yup` was not used in all the forms.
-- Some styles need to be improved.
+  - The tests are not covering all the code.
+  - The integration tests not developed yet.
+  - If the rules for the roles change, the frontend will need to be updated.
+  - The `react-hook-form` was not used in all the forms.
+  - The `yup` was not used in all the forms.
+  - Some styles need to be improved.
 
 ## Installation
 
@@ -67,25 +83,6 @@ curl -X 'POST' \
 }'
 ```
 
-
-### Backend
-
-The backend was splited in six projects: `EMS.Api`, `EMS.Application`, `EMS.Domain`, `EMS.Infrastructure`, `EMS.UnitTests`, and `EMS.IntegrationTests`. 
-The `EMS.Api` project is the main project, where the endpoints and the services are located, and/or initialized. Also this project there is a file `EMS.Api.Http` to run tests locally like usually, you could do using the `Postman` or `Swagger UI`. If you are using Visual Studio, you need to install an extension (`REST Client`) to run the requests.
-The `EMS.Domain` project contains the domain models and the interfaces, it is important to mention that the domain models are not the same as the database models. 
-The `EMS.Application` project contains the services and the mappers, and any validation that is needed to be done before calling the repository methods. 
-The `EMS.Infrastructure` project contains the database context and the repository implementations. 
-The `EMS.UnitTests` project contains the tests for the services.
-The `EMS.IntegrationTests` project contains the tests for the endpoints, to make sure that the API is working as expected.
-
-Make sure to configure the environment variables in the `docker-compose.yml` file.
-
-### Frontend
-
-The frontend is a React application that uses TypeScript. To run the frontend, you will need to have Node.js installed on your machine.
-
-Also, to run locally make sure to configure the target api in the vite.config.ts file with the url and port correctly.
-
 ## Migrations
 
 Run migration before execute the app:
@@ -93,6 +90,17 @@ Run migration before execute the app:
 ```bash
 dotnet ef database update
 ```
+
+If you need to create a new migration, you can run the following command:
+
+```bash
+dotnet ef migrations add <MigrationName>
+```
+
+after that you can update the database with the previous command.
+
+Instead of keeping the migration folder on the api project, I do prefer to keep it in the Infrastructure project, so I can use the same migrations in the tests, and dot add dependencies between the projects.
+
 
 ## Authentication & Authorization
 
