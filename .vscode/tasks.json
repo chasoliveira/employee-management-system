@@ -1,0 +1,117 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/backend/EmployeeManagementSystem.sln",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary;ForceNoAlign"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/backend/EmployeeManagementSystem.sln",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary;ForceNoAlign"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "--project",
+                "${workspaceFolder}/backend/EmployeeManagementSystem.sln"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: debug",
+            "dependsOn": [
+                "build"
+            ],
+            "dockerBuild": {
+                "tag": "employeemanagementsystem:dev",
+                "target": "base",
+                "dockerfile": "${workspaceFolder}/backend/src/EMS.Api/Dockerfile",
+                "context": "${workspaceFolder}",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/backend/src/EMS.Api/EMS.Api.csproj"
+            }
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: release",
+            "dependsOn": [
+                "build"
+            ],
+            "dockerBuild": {
+                "tag": "employeemanagementsystem:latest",
+                "dockerfile": "${workspaceFolder}/backend/src/EMS.Api/Dockerfile",
+                "context": "${workspaceFolder}",
+                "platform": {
+                    "os": "linux",
+                    "architecture": "amd64"
+                },
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/backend/src/EMS.Api/EMS.Api.csproj"
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: debug",
+            "dependsOn": [
+                "docker-build: debug"
+            ],
+            "dockerRun": {},
+            "netCore": {
+                "appProject": "${workspaceFolder}/backend/src/EMS.Api/EMS.Api.csproj",
+                "enableDebugging": true
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: release",
+            "dependsOn": [
+                "docker-build: release"
+            ],
+            "dockerRun": {},
+            "netCore": {
+                "appProject": "${workspaceFolder}/backend/src/EMS.Api/EMS.Api.csproj"
+            }
+        },
+        {
+			"label": "Run Unit tests",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"test",
+				"${workspaceFolder}/backend/tests/EMS.UnitTests/EMS.UnitTests.csproj",
+				"--results-directory",
+				"${workspaceFolder}/backend/tests/EMS.UnitTests/TestResults",
+				"/p:CollectCoverage=true",
+				"/p:CoverletOutputFormat=lcov",
+				"/p:CoverletOutput=./TestResults/lcov.info",
+				"/p:ExcludeByFile=\"**/Program.cs;**/obj/**;**/bin/**;**/*.dll;**/backend/tests/**;**/Migrations/**;**/ValueObjects/**\""
+			],
+			"problemMatcher": "$msCompile"
+		},
+    ]
+}
